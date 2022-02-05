@@ -1,0 +1,28 @@
+{
+    "name": "@pbots/nrc",
+    "version": "1.0.0",
+    "description": "A simple CLI for creating new react components",
+    "homepage": "https://github.com/parkerbotsford/nrc#readme",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "bin": {
+        "nrc": "app.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/parkerbotsford/nrc.git"
+    },
+    "keywords": [
+        "cli",
+        "react",
+        "component",
+        "boilerplate"
+    ],
+    "author": "Parker Botsford",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/parkerbotsford/nrc/issues"
+    }
+}
