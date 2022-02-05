@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "A simple CLI for creating functional react components",
     "homepage": "https://github.com/parkerbotsford/nrc#readme",
+    "type": "module",
     "main": "app.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"

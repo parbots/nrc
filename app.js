@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 
-const { existsSync } = require('fs');
-const fs = require('fs').promises;
-const path = require('path');
+import { existsSync } from 'fs';
+import { promises as fs } from 'fs';
+import { normalize, resolve } from 'path';
 
-const { program } = require('commander');
-const { version } = require('./package.json');
+import { program } from 'commander';
+
+// Get version from package.json
+const { version } = JSON.parse(await fs.readFile('package.json'));
 
 // Create the command
 program
@@ -33,13 +35,13 @@ const [componentName] = program.args;
 const options = program.opts();
 
 // removes any leading or extra slashes
-options.dir = path.normalize(`./` + options.dir);
+options.dir = normalize(`./` + options.dir);
 
 // The directory of the component (Default: components/${componentName})
-const componentDir = path.normalize(`${options.dir}/${componentName}`);
+const componentDir = normalize(`${options.dir}/${componentName}`);
 
 // The path of the component file and the file template
-const componentPath = path.normalize(`${componentDir}/${componentName}.js`);
+const componentPath = normalize(`${componentDir}/${componentName}.js`);
 const componentTemplate = `const ${componentName} = () => {
     return (
         <div>
@@ -51,7 +53,7 @@ const componentTemplate = `const ${componentName} = () => {
 export default ${componentName};`;
 
 // The path of the index.js file and the file template
-const indexPath = path.normalize(`${componentDir}/index.js`);
+const indexPath = normalize(`${componentDir}/index.js`);
 const indexTemplate = `export { default } from './${componentName}'`;
 
 console.info(`Creating the ${componentName} component!`);
@@ -59,7 +61,7 @@ console.info('-'.repeat(75));
 console.info('');
 
 // Make sure the parent directory exists
-if (!existsSync(path.resolve(options.dir))) {
+if (!existsSync(resolve(options.dir))) {
     console.error(
         `The directory '${options.dir}' does not exist! Please create it and try again.`
     );
@@ -99,7 +101,7 @@ fs.mkdir(componentDir)
     .then(() => {
         console.info(`\tcreated '${indexPath}'`);
         if (options.module) {
-            const modulePath = path.normalize(
+            const modulePath = normalize(
                 `${componentDir}/${componentName}.module.css`
             );
 
