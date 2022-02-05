@@ -1,7 +1,7 @@
 {
     "name": "@pbots/nrc",
     "version": "1.0.0",
-    "description": "A simple CLI for creating new react components",
+    "description": "A simple CLI for creating functional react components",
     "homepage": "https://github.com/parkerbotsford/nrc#readme",
     "main": "app.js",
     "scripts": {
