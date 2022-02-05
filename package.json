@@ -27,6 +27,7 @@
         "url": "https://github.com/parkerbotsford/nrc/issues"
     },
     "dependencies": {
+        "chalk": "^5.0.0",
         "commander": "^9.0.0"
     }
 }

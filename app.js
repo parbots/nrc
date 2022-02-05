@@ -5,6 +5,23 @@ import { promises as fs } from 'fs';
 import { normalize, resolve } from 'path';
 
 import { program } from 'commander';
+import chalk from 'chalk';
+
+const log = console.log;
+
+const info = (msg) => {
+    console.info(chalk.blue(msg));
+};
+
+// Color success messages as green
+const success = (msg) => {
+    console.log(chalk.green(msg));
+};
+
+// Color error messages red
+const error = (err) => {
+    console.error(chalk.red(err));
+};
 
 // Get version from package.json
 const { version } = JSON.parse(await fs.readFile('package.json'));
@@ -14,15 +31,22 @@ program
     .version(version, '-v, --version', 'output the current version')
     .argument('<component-name>')
     .description(
-        `creates a '<component-name>.js' file and 'index.js' file in the 'components/<component-name>' sub-directory`
+        `creates a new functional component in the 'components/component-name' directory with the following file structure:
+
+    components/example/
+        example.js - main component file
+        index.js - makes component easier to import
+
+the component can then be imported with:
+    import example from '/path/to/components/example'`
     )
     .option(
         '-m, --module',
-        `add a '<component-name>.module.css' file in the '<component-name>' directory`,
+        `creates and imports 'component-name.module.css' file into component-name.js`,
         false
     )
     .option(
-        '-d, --dir <pathToDirectory>',
+        '-d, --dir <pathToParentDir>',
         'specify the path to the parent directory',
         'components'
     )
@@ -56,31 +80,44 @@ export default ${componentName};`;
 const indexPath = normalize(`${componentDir}/index.js`);
 const indexTemplate = `export { default } from './${componentName}'`;
 
-console.info(`Creating the ${componentName} component!`);
-console.info('-'.repeat(75));
-console.info('');
-
 // Make sure the parent directory exists
-if (!existsSync(resolve(options.dir))) {
-    console.error(
-        `The directory '${options.dir}' does not exist! Please create it and try again.`
+log('');
+info('Checking for parent directory...');
+const fullParentDir = resolve(options.dir);
+if (!existsSync(fullParentDir)) {
+    error(
+        `The directory '${fullParentDir}' does not exist! Please create it and try again.`
     );
     process.exit(0);
+} else {
+    success(`'${options.dir}' exists!`);
 }
 
 // Check if the component already exists
+log('');
+info(`Checking for component directory...`);
 if (existsSync(componentDir)) {
-    console.error(
-        `There is already a component '${componentDir}' directory! Please delete the directory and try again.`
+    error(
+        `There is already a '${componentDir}' directory! Please delete the directory and try again.`
     );
     process.exit(0);
+} else {
+    success(`'${componentDir}' does not exists!`);
 }
+
+log('');
+log(`Creating the ${componentName} component...`);
+if (options.module) {
+    info('with module.css');
+}
+log('-'.repeat(75));
+log('');
 
 // Create component dir
 fs.mkdir(componentDir)
     // Create ${componentName}.js file
     .then(() => {
-        console.info(`\tcreated '${componentDir}'`);
+        success(`\tcreated '${componentDir}'`);
 
         // Add import statement if using modules
         if (options.module) {
@@ -94,27 +131,28 @@ fs.mkdir(componentDir)
     })
     // Create index.js file
     .then(() => {
-        console.info(`\tcreated '${componentPath}'`);
+        success(`\tcreated '${componentPath}'`);
         return fs.writeFile(indexPath, indexTemplate);
     })
     // Create ${componentName}.module.css file or skip
     .then(() => {
-        console.info(`\tcreated '${indexPath}'`);
+        success(`\tcreated '${indexPath}'`);
         if (options.module) {
             const modulePath = normalize(
                 `${componentDir}/${componentName}.module.css`
             );
 
             return fs.writeFile(modulePath, '').then(() => {
-                console.info(`\tcreated '${modulePath}'`);
+                success(`\tcreated '${modulePath}'`);
             });
         }
     })
     .then(() => {
-        console.info('');
-        console.info('-'.repeat(75));
-        console.info(`Yay! Successfully created ${componentName}! :)`);
+        log('');
+        log('-'.repeat(75));
+        success(`Yay! Successfully created ${componentName}! :)`);
+        log('');
     })
     .catch((err) => {
-        console.error(err);
+        error(err);
     });
