@@ -1,12 +1,13 @@
 {
     "name": "@pbots/nrc",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "A simple CLI for creating functional react components",
     "homepage": "https://github.com/parkerbotsford/nrc#readme",
     "type": "module",
     "main": "app.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "mkdir components && node app.js Test",
+        "clean": "rm -rf components"
     },
     "bin": {
         "nrc": "app.js"

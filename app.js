@@ -4,8 +4,7 @@ import { existsSync } from 'fs';
 import { promises as fs } from 'fs';
 import { normalize, resolve } from 'path';
 
-import { Command } from 'commander';
-const program = new Command();
+import { program } from 'commander';
 
 import chalk from 'chalk';
 
@@ -26,12 +25,7 @@ const error = (err) => {
 };
 
 // Get version from package.json
-const { version } = JSON.parse(
-    await fs.readFile('package.json').catch((err) => {
-        error(err);
-        process.exit(0);
-    })
-);
+const version = process.env.npm_package_version;
 
 // Create the command
 program
