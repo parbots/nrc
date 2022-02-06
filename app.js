@@ -24,8 +24,8 @@ const error = (err) => {
     console.error(chalk.red(err));
 };
 
-// Get version from package.json
-const version = process.env.npm_package_version;
+// ! always match package.json
+const version = '1.0.3';
 
 // Create the command
 program
