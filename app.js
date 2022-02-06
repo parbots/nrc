@@ -4,7 +4,9 @@ import { existsSync } from 'fs';
 import { promises as fs } from 'fs';
 import { normalize, resolve } from 'path';
 
-import { program } from 'commander';
+import { Command } from 'commander';
+const program = new Command();
+
 import chalk from 'chalk';
 
 const log = console.log;
@@ -24,12 +26,17 @@ const error = (err) => {
 };
 
 // Get version from package.json
-const { version } = JSON.parse(await fs.readFile('package.json'));
+const { version } = JSON.parse(
+    await fs.readFile('package.json').catch((err) => {
+        error(err);
+        process.exit(0);
+    })
+);
 
 // Create the command
 program
     .version(version, '-v, --version', 'output the current version')
-    .argument('<component-name>')
+    .argument('<component-name>', 'name of the new component')
     .description(
         `creates a new functional component in the 'components/component-name' directory with the following file structure:
 
