@@ -25,7 +25,7 @@ const error = (err) => {
 };
 
 // ! always match package.json
-const version = '1.0.3';
+const version = '1.1.0';
 
 // Create the command
 program
@@ -49,7 +49,7 @@ the component can then be imported with:
     .option(
         '-d, --dir <pathToParentDir>',
         'specify the path to the parent directory',
-        'components'
+        'src/components'
     )
     .parse();
 
@@ -61,6 +61,34 @@ const options = program.opts();
 
 // removes any leading or extra slashes
 options.dir = normalize(`./` + options.dir);
+
+// Make sure the parent directory exists
+log('');
+info('Checking if parent directory exists...');
+
+let fullParentDir = resolve(options.dir);
+if (existsSync(fullParentDir)) {
+    success(`'${options.dir}' exists!`);
+}
+// check 'components' directory if default directory was not found
+else if (options.dir == 'src/components') {
+    log(`'src/components' not found, checking for 'components'...`);
+    fullParentDir = resolve('./components');
+    if (existsSync(fullParentDir)) {
+        options.dir = normalize('./components');
+        success(`'${options.dir}' exists!`);
+    } else {
+        error(
+            `Could not find a 'src/components' or 'components' directory!\nPlease create one and try again, or specify another diretory with '-d <directory-name>'.`
+        );
+        process.exit(0);
+    }
+} else {
+    error(
+        `The directory '${fullParentDir}' does not exist! Please create it and try again.`
+    );
+    process.exit(0);
+}
 
 // The directory of the component (Default: components/${componentName})
 const componentDir = normalize(`${options.dir}/${componentName}`);
@@ -81,33 +109,21 @@ export default ${componentName};`;
 const indexPath = normalize(`${componentDir}/index.js`);
 const indexTemplate = `export { default } from './${componentName}'`;
 
-// Make sure the parent directory exists
-log('');
-info('Checking for parent directory...');
-const fullParentDir = resolve(options.dir);
-if (!existsSync(fullParentDir)) {
-    error(
-        `The directory '${fullParentDir}' does not exist! Please create it and try again.`
-    );
-    process.exit(0);
-} else {
-    success(`'${options.dir}' exists!`);
-}
-
 // Check if the component already exists
 log('');
-info(`Checking for component directory...`);
+info(`Checking if component already exists...`);
 if (existsSync(componentDir)) {
     error(
-        `There is already a '${componentDir}' directory! Please delete the directory and try again.`
+        `'${componentDir}' already exists! Please delete the directory and try again.`
     );
     process.exit(0);
 } else {
-    success(`'${componentDir}' does not exists!`);
+    success(`'${componentDir}' does not exist!`);
 }
 
 log('');
-log(`Creating the ${componentName} component...`);
+info(`Creating the ${componentName} component...`);
+// display argument info
 if (options.module) {
     info('with module.css');
 }
