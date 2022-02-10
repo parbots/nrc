@@ -18,16 +18,16 @@ npm i -g @pbots/nrc
 nrc <component-name>
 ```
 
-nrc looks for the `./components` directory by default
+nrc looks for the `src/components` and `components` directories by default
 
 <br>
 
 ### Output:
 
 ```tree
-./components/<component-name>
+./src/components/<component-name>
 ├──index.js
-└──<comonent-name>.js
+└──<component-name>.js
 ```
 
 <br>
@@ -44,7 +44,7 @@ nrc <component-name> -dir /path/to/dir
 ```tree
 ./path/to/dir/<component-name>
 ├──index.js
-└──<comonent-name>.js
+└──<component-name>.js
 ```
 
 <br>
@@ -56,11 +56,13 @@ nrc <component-name> -m
 nrc <component-name> --module
 ```
 
+Creates a `<component-name>.module.css` file and imports it into `<component-name>.js`.
+
 ### Output:
 
 ```tree
-./components/<component-name>
+./src/components/<component-name>
 ├──index.js
-├──<comonent-name>.js
-└──<comonent-name>.module.css
+├──<component-name>.js
+└──<component-name>.module.css
 ```
