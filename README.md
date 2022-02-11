@@ -22,7 +22,7 @@ nrc looks for the `src/components` and `components` directories by default
 
 <br>
 
-### Output:
+#### Output:
 
 ```tree
 ./src/components/<component-name>
@@ -39,7 +39,7 @@ nrc <component-name> -d /path/to/dir
 nrc <component-name> -dir /path/to/dir
 ```
 
-### Output:
+#### Output:
 
 ```tree
 ./path/to/dir/<component-name>
@@ -58,7 +58,7 @@ nrc <component-name> --typescript
 
 Creates `.tsx` files instead of `.js`.
 
-### Output:
+#### Output:
 
 ```tree
 ./src/components/<component-name>
@@ -77,7 +77,7 @@ nrc <component-name> --module
 
 Creates a `<component-name>.module.css` file and imports it into `<component-name>.js`.
 
-### Output:
+#### Output:
 
 ```tree
 ./src/components/<component-name>
