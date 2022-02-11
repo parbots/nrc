@@ -49,6 +49,25 @@ nrc <component-name> -dir /path/to/dir
 
 <br>
 
+## Using Typescript
+
+```bash
+nrc <component-name> -t
+nrc <component-name> --typescript
+```
+
+Creates `.tsx` files instead of `.js`.
+
+### Output:
+
+```tree
+./src/components/<component-name>
+├──index.tsx
+└──<component-name>.tsx
+```
+
+<br>
+
 ## Using CSS modules
 
 ```bash

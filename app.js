@@ -25,7 +25,7 @@ const error = (err) => {
 };
 
 // ! always match package.json
-const version = '1.1.1';
+const version = '1.2.0';
 
 // Create the command
 program
@@ -51,6 +51,7 @@ the component can then be imported with:
         'specify the path to the parent directory',
         'src/components'
     )
+    .option('-t, --typescript', 'creates .tsx files instead of .js', false)
     .parse();
 
 // Get the name of the component from the command argument
@@ -94,8 +95,11 @@ else if (options.dir == 'src/components') {
 const componentDir = normalize(`${options.dir}/${componentName}`);
 
 // The path of the component file and the file template
-const componentPath = normalize(`${componentDir}/${componentName}.js`);
+const componentPath = normalize(
+    `${componentDir}/${componentName}${options.typescript ? '.tsx' : '.js'}`
+);
 const componentTemplate = `
+${options.module ? `import styles from './${componentName}.module.css'` : ''}
 import React from 'react';
 
 const ${componentName} = () => {
@@ -111,7 +115,9 @@ export default ${componentName};
 `;
 
 // The path of the index.js file and the file template
-const indexPath = normalize(`${componentDir}/index.js`);
+const indexPath = normalize(
+    `${componentDir}/index${options.typescript ? '.tsx' : '.js'}`
+);
 const indexTemplate = `export { default } from './${componentName}'`;
 
 // Check if the component already exists
@@ -140,15 +146,6 @@ fs.mkdir(componentDir)
     // Create ${componentName}.js file
     .then(() => {
         success(`\tcreated '${componentDir}'`);
-
-        // Add import statement if using modules
-        if (options.module) {
-            const newComponentTemplate =
-                `import styles from './${componentName}.module.css'\n\n` +
-                componentTemplate;
-            return fs.writeFile(componentPath, newComponentTemplate);
-        }
-
         return fs.writeFile(componentPath, componentTemplate);
     })
     // Create index.js file
