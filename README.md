@@ -85,3 +85,7 @@ Creates a `<component-name>.module.css` file and imports it into `<component-nam
 ├──<component-name>.js
 └──<component-name>.module.css
 ```
+
+<br>
+
+Inspired by [joshwcomeau/new-component](https://github.com/joshwcomeau/new-component).
