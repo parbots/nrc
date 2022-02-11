@@ -25,7 +25,7 @@ const error = (err) => {
 };
 
 // ! always match package.json
-const version = '1.1.0';
+const version = '1.1.1';
 
 // Create the command
 program
@@ -95,7 +95,10 @@ const componentDir = normalize(`${options.dir}/${componentName}`);
 
 // The path of the component file and the file template
 const componentPath = normalize(`${componentDir}/${componentName}.js`);
-const componentTemplate = `const ${componentName} = () => {
+const componentTemplate = `
+import React from 'react';
+
+const ${componentName} = () => {
     return (
         <div>
             <h1>${componentName}</h1>
@@ -103,7 +106,9 @@ const componentTemplate = `const ${componentName} = () => {
     );
 };
 
-export default ${componentName};`;
+export default ${componentName};
+
+`;
 
 // The path of the index.js file and the file template
 const indexPath = normalize(`${componentDir}/index.js`);
