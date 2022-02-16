@@ -25,7 +25,7 @@ const error = (err) => {
 };
 
 // ! always match package.json
-const version = '1.2.0';
+const version = '1.2.1';
 
 // Create the command
 program
