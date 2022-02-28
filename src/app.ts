@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-import { existsSync } from 'fs';
+const version = '2.0.0';
+
+import { existsSync as exists } from 'fs';
 import { promises as fs } from 'fs';
 import { normalize, resolve } from 'path';
 
@@ -8,24 +10,24 @@ import { program } from 'commander';
 
 import chalk from 'chalk';
 
-const log = console.log;
+const log = (message: string) => {
+    console.log(message);
+};
 
-const info = (msg) => {
-    console.info(chalk.blue(msg));
+// Color info messages as blue
+const info = (message: string) => {
+    console.info(chalk.blue(message));
 };
 
 // Color success messages as green
-const success = (msg) => {
-    console.log(chalk.green(msg));
+const success = (msg: string) => {
+    log(chalk.green(msg));
 };
 
 // Color error messages red
-const error = (err) => {
+const error = (err: string) => {
     console.error(chalk.red(err));
 };
-
-// ! always match package.json
-const version = '1.2.1';
 
 // Create the command
 program
@@ -68,36 +70,44 @@ log('');
 info('Checking if parent directory exists...');
 
 let fullParentDir = resolve(options.dir);
-if (existsSync(fullParentDir)) {
+
+if (exists(fullParentDir)) {
     success(`'${options.dir}' exists!`);
 }
 // check 'components' directory if default directory was not found
 else if (options.dir == 'src/components') {
     log(`'src/components' not found, checking for 'components'...`);
+
     fullParentDir = resolve('./components');
-    if (existsSync(fullParentDir)) {
+
+    if (exists(fullParentDir)) {
         options.dir = normalize('./components');
+
         success(`'${options.dir}' exists!`);
     } else {
         error(
             `Could not find a 'src/components' or 'components' directory!\nPlease create one and try again, or specify another diretory with '-d <directory-name>'.`
         );
+
         process.exit(0);
     }
 } else {
     error(
         `The directory '${fullParentDir}' does not exist! Please create it and try again.`
     );
+
     process.exit(0);
 }
 
 // The directory of the component (Default: components/${componentName})
 const componentDir = normalize(`${options.dir}/${componentName}`);
 
-// The path of the component file and the file template
+// Component file path
 const componentPath = normalize(
     `${componentDir}/${componentName}${options.typescript ? '.tsx' : '.js'}`
 );
+
+// Component file template
 const componentTemplate = `
 ${options.module ? `import styles from './${componentName}.module.css'` : ''}
 import React from 'react';
@@ -114,19 +124,22 @@ export default ${componentName};
 
 `;
 
-// The path of the index.js file and the file template
+// Index file path
 const indexPath = normalize(
     `${componentDir}/index${options.typescript ? '.tsx' : '.js'}`
 );
+
+// Index file template
 const indexTemplate = `export { default } from './${componentName}'`;
 
 // Check if the component already exists
 log('');
-info(`Checking if component already exists...`);
-if (existsSync(componentDir)) {
+info('Checking if component already exists...');
+if (exists(componentDir)) {
     error(
         `'${componentDir}' already exists! Please delete the directory and try again.`
     );
+
     process.exit(0);
 } else {
     success(`'${componentDir}' does not exist!`);
@@ -146,16 +159,19 @@ fs.mkdir(componentDir)
     // Create ${componentName}.js file
     .then(() => {
         success(`\tcreated '${componentDir}'`);
+
         return fs.writeFile(componentPath, componentTemplate);
     })
     // Create index.js file
     .then(() => {
         success(`\tcreated '${componentPath}'`);
+
         return fs.writeFile(indexPath, indexTemplate);
     })
     // Create ${componentName}.module.css file or skip
     .then(() => {
         success(`\tcreated '${indexPath}'`);
+
         if (options.module) {
             const modulePath = normalize(
                 `${componentDir}/${componentName}.module.css`
