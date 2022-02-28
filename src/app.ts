@@ -86,7 +86,7 @@ else if (options.dir == 'src/components') {
         success(`'${options.dir}' exists!`);
     } else {
         error(
-            `Could not find a 'src/components' or 'components' directory!\nPlease create one and try again, or specify another diretory with '-d <directory-name>'.`
+            `Could not find a 'src/components' or 'components' directory!\nPlease create one and try again, or specify another directory with '-d <directory-name>'.`
         );
 
         process.exit(0);
