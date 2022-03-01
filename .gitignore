@@ -4,3 +4,6 @@ node_modules
 # Testing
 components
 src/components
+
+# Build
+build
