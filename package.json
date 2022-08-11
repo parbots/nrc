@@ -1,6 +1,6 @@
 {
     "name": "@pbots/nrc",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "description": "A simple CLI for creating functional react components",
     "homepage": "https://github.com/parkerbotsford/nrc#readme",
     "type": "module",
@@ -33,11 +33,11 @@
         "url": "https://github.com/parkerbotsford/nrc/issues"
     },
     "dependencies": {
-        "chalk": "^5.0.0",
-        "commander": "^9.0.0"
+        "chalk": "^5.0.1",
+        "commander": "^9.4.0"
     },
     "devDependencies": {
-        "@types/node": "^17.0.21",
-        "typescript": "^4.5.5"
+        "@types/node": "^18.7.1",
+        "typescript": "^4.7.4"
     }
 }
