@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const version = '2.3.0';
+const version = '2.3.2';
 
 import { existsSync as exists } from 'fs';
 import { promises as fs } from 'fs';
