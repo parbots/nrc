@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const version = '2.2.0';
+const version = '2.3.0';
 
 import { existsSync as exists } from 'fs';
 import { promises as fs } from 'fs';
@@ -34,26 +34,31 @@ program
     .version(version, '-v, --version', 'output the current version')
     .argument('<component-name>', 'name of the new component')
     .description(
-        `creates a new functional component in the 'components/component-name' directory with the following file structure:
+`Creates a functional react component with the following default file structure:
 
-    components/example/
-        example.js - main component file
-        index.js - makes component easier to import
+    Example/
+        Example.js - Main component file
+        index.js - Allows easy importing of component  
 
-the component can then be imported with:
-    import example from '/path/to/components/example'`
+The component can the be imported with:
+    import example from '/src/components/example'
+
+The default parent directory for components is 'src/components', or 'components' if the previous does not exist
+
+If neither directory exists, nrc will exit without creating the component unless a custom path is passed with the '-d' option
+`
     )
     .option(
         '-m, --module',
-        `creates and imports 'component-name.module.css' file into component-name.js`,
+        `Creates 'component-name.module.css' and adds an import into the main component file`,
         false
     )
     .option(
         '-d, --dir <pathToParentDir>',
-        'specify the path to the parent directory',
+        'Specify the path to the parent directory',
         'src/components'
     )
-    .option('-t, --typescript', 'creates .tsx files instead of .js', false)
+    .option('-t, --typescript', 'Creates .tsx and .ts files instead of .js', false)
     .parse();
 
 // Get the name of the component from the command argument
@@ -62,7 +67,7 @@ const [componentName] = program.args;
 // Get options from command input
 const options = program.opts();
 
-// removes any leading or extra slashes
+// Removes any excess whitespace or slashes
 options.dir = normalize(`./` + options.dir);
 
 // Make sure the parent directory exists
@@ -71,10 +76,11 @@ info('Checking if parent directory exists...');
 
 let fullParentDir = resolve(options.dir);
 
+// Check if 'src/components' or custom directory exists
 if (exists(fullParentDir)) {
     success(`'${options.dir}' exists!`);
 }
-// check 'components' directory if default directory was not found
+// check 'components' directory if 'src/components' was not found
 else if (options.dir == 'src/components') {
     log(`'src/components' not found, checking for 'components'...`);
 
@@ -99,7 +105,7 @@ else if (options.dir == 'src/components') {
     process.exit(0);
 }
 
-// The directory of the component (Default: components/${componentName})
+// The directory of the component (Default: src/components/${componentName})
 const componentDir = normalize(`${options.dir}/${componentName}`);
 
 // Component file path
@@ -109,10 +115,10 @@ const componentPath = normalize(
 
 // Component file template
 const componentTemplate = `
-${options.module ? `import styles from './${componentName}.module.css'` : ''}
-import React from 'react';
 
-const ${componentName} = () => {
+${options.module ? `import styles from './${componentName}.module.css'` : ''}
+
+export const ${componentName} = () => {
     return (
         <div>
             <h1>${componentName}</h1>
@@ -120,17 +126,15 @@ const ${componentName} = () => {
     );
 };
 
-export default ${componentName};
-
 `;
 
-// Index file path
+// 'index.js' file path
 const indexPath = normalize(
-    `${componentDir}/index${options.typescript ? '.tsx' : '.js'}`
+    `${componentDir}/index${options.typescript ? '.ts' : '.js'}`
 );
 
-// Index file template
-const indexTemplate = `export { default } from './${componentName}'`;
+// 'index.js' file template
+const indexTemplate = `export { ${componentName} } from './${componentName}'`;
 
 // Check if the component already exists
 log('');
@@ -146,10 +150,13 @@ if (exists(componentDir)) {
 }
 
 log('');
-info(`Creating the ${componentName} component...`);
+info(`Creating ${componentName}...`);
 // display argument info
 if (options.module) {
     info('with module.css');
+}
+if (options.typescript) {
+    info('with typescript');
 }
 log('-'.repeat(75));
 log('');
